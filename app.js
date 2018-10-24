@@ -1,189 +1,147 @@
-const express = require('express');
+var express = require('express');
+var exphbs  = require('express-handlebars');
 const path = require('path');
-const { Client } = require('pg');
-const exphbs = require('express-handlebars');
-const bodyParser = require('body-parser');
-const moment = require('moment');
-const PORT = process.env.PORT || 5000;
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
+const session = require('express-session')
+const flash = require('connect-flash')
+const passport = require('passport');
+const Strategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
+const saltRounds = 10;
+ 
+const user = require('./models/users') 
 
-const client = new Client({
-  database: 'dbou0tbvgvmigk',
-  user: 'mzpwcgfmduxtdm',
-  password: 'bc062e477ec12aea4d17e9007bbc1f12d40497ada068f7e16b0efeb61dfec5d6',
-  host: 'ec2-54-221-225-11.compute-1.amazonaws.com',
-  port: 5432,
-  ssl: true
-});
 
-client.connect()
-  .then(function () {
-    console.log('connected to database!');
-  })
-  .catch(function () {
-    console.log('Error');
-  });
 
-const app = express();
-app.use(express.static(path.join(__dirname, 'public')));
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+var app = express();
+app.engine('handlebars', exphbs({
+	defaultLayout: 'main',
+	layoutsDir: __dirname + '/views/layouts/',
+	partialsDir: __dirname + '/views/partials/'}));
 app.set('view engine', 'handlebars');
+app.set('port',(process.env.PORT|| 3000));
+app.use('/assets', express.static('assets'))
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
-app.get('/', function (req, res) {
-  res.render('login');
-});
 
-app.get('/Faculty/Admin/Home', function (req, res) {
-  res.render('adminhome');
-});
+app.use(cookieParser('secret'));
+app.use(session({
+  secret: 'somiDOTAn',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false,
+            maxAge: 10800000 }
+}))
+app.use(flash());
 
-app.get('/Faculty/Regular/Home', function (req, res) {
-  res.render('facultyhome');
-});
 
-app.get('/Student/Home', function (req, res) {
-  res.render('facultyhome');
-});
+app.use(passport.initialize()); 
+app.use(passport.session());
 
-app.get('/LoginFailed', function (req, res) {
-  res.render('LoginFailed');
-});
-
-app.get('/register', function (req, res) {
-  res.render('register');
-});
-
-app.get('/registerfaculty', function (req, res) {
-  res.render('registerfaculty');
-});
-
-app.get('/registersuccess', function (req, res) {
-  res.render('registersuccess');
-});
-
-app.get('/regiinvalid', function (req, res) {
-  res.render('regiinvalid');
-});
-
-app.get('/registerstudent', function (req, res) {
-  res.render('registerstudent');
-});
-
-app.get('/adminclasses', function (req, res) {
-  res.render('adminclass');
-});
-
-app.get('/facultyclasses', function (req, res) {
-  res.render('facultyclass');
-});
-
-app.get('/studentclasses', function (req, res) {
-});
-
-app.post('/registudent', function (req, res) {
-  var usertype = 'Student';
-  var values = [];
-  values = [req.body.firstname, req.body.lastname, req.body.username, req.body.password1, usertype, req.body.studentnumber];
-  var pass1 = req.body.password1;
-  var pass2 = req.body.password2;
-  if (pass1 === pass2) {
-     client.query('INSERT INTO users(first_name, last_name, username, password, usertype, studentnumber) VALUES($1, $2, $3, $4, $5, $6)', values, (err, res) => {
-        if (err) {
-          console.log(err.stack);
-        } else {
-          console.log(res.rows[0]);
-        }
-      });
-        res.redirect('/registersuccess');
-  } else {
-    res.redirect('/regiinvalid');
-  }
-});
-
-app.post('/regifaculty', function (req, res) {
-  var usertype = 'Faculty';
-  var values = [];
-  values = [req.body.firstname, req.body.lastname, req.body.username, req.body.password1, usertype, req.body.Privelege];
-  var pass1 = req.body.password1;
-  var pass2 = req.body.password2;
-  if (pass1 === pass2) {
-     client.query('INSERT INTO users(first_name, last_name, username, password, usertype, isadmin) VALUES($1, $2, $3, $4, $5, $6)', values, (err, res) => {
-        if (err) {
-          console.log(err.stack);
-        } else {
-          console.log(res.rows[0]);
-        }
-      });
-        res.redirect('/registersuccess');
-  } else {
-    res.redirect('/regiinvalid');
-  }
-});
-
-app.post('/checkusertype', function (req, res) {
-  var values = [];
-  values = [req.body.username, req.body.password];
-  var values1 = req.body.username;
-  var values2 = req.body.password;
-  var usertype = 'Faculty';
-  var isadmin = 'Admin';
-  console.log(req.body);
-  client.query('SELECT username FROM users', (req, data) => {
-    var list;
-    var exist = 0;
-    console.log('compareusername');
-    for (var i = 0; i < data.rows.length; i++) {
-      list = data.rows[i].username;
-      console.log(list);
-      if (list == values1) {
-        exist = 1;
+passport.use(new Strategy({
+  usernameField: 'username',
+  passwordField: 'password'
+},
+function(username, password, done) {
+  user.getByUsername(username, function(user) {  	
+    if (!user) { 
+      console.log('no user exists')
+      return done(null, false) 
+    }
+    bcrypt.compare(password, user.password).then(function(status) {
+      if (status == false) { 
+        console.log('incorrect password')
+        return done(null, false) 
       }
-    }
-    if (exist === 1) {
-      console.log('usernamevalid');
-      client.query('SELECT password FROM users WHERE username = $1',[values1], (req, data) => {
-        var list1;
-        var exist1 = 0;
-        console.log('comparepassword');
-        for (var i = 0; i < data.rows.length; i++) {
-        list1 = data.rows[i].password;
-        console.log(list1);
-        if (list1 == values2) {
-        exist1 = 1;
-      }
-    }
-    if (exist1 === 1) {
-      console.log('LoginSucess');
-      console.log('Checking Usertype');
-      client.query('SELECT usertype, isadmin FROM users WHERE username = $1',[values1], (req, data) => {
-        var usertypequery = data.rows[0].usertype;
-        var isadminquery = data.rows[0].isadmin;
-        if (usertypequery == usertype) {
-          if (isadminquery == isadmin) {
-            res.redirect('/Faculty/Admin/Home');
-          } else{
-            res.redirect('/Faculty/Regular/Home');
-          }
+      console.log('logged in')
+      return done(null, user)
+    });
 
-        } else {
-            res.redirect('Student/Home');
-        }
-      });
-    } else {
-      res.redirect('/LoginFailed');
-    }
-      });
-    } else {
-      res.redirect('/LoginFailed');
-    }
+ });
+}));
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user.id);
+});
+
+passport.deserializeUser(function(id, cb) {
+  user.getById(id, function (user) {
+    cb(null, user);
   });
 });
 
-app.listen(3000, function () {
-  console.log('Server started at port 3000');
-});
 
-app.listen(PORT);
+function isAdmin(req, res, next) {
+  if (req.isAuthenticated()) {
+      if (req.user.is_admin === true) {
+          return next();
+      }
+      else{
+        res.redirect('/login/account')
+      }
+    // });
+  } else{
+    res.redirect('/login');
+  }
+}
+
+function isFaculty(req, res, next) {
+  if (req.isAuthenticated()) {
+      if (req.user.user_type === 'faculty') {
+          return next();
+      }
+      else{
+        res.redirect('/login/account')
+      }
+    // });
+  } else{
+    res.redirect('/login');
+  }
+}
+
+function isStudent(req, res, next) {
+  if (req.isAuthenticated()) {
+      if (req.user.user_type === 'student') {
+          return next();
+      }
+      else{
+        res.redirect('/login/account')
+      }
+    // });
+  } else{
+    res.redirect('/login');
+  }
+}
+
+
+
+const indexRouter = require('./routes/app')
+const studentRouter = require('./routes/student')
+const adminRouter = require('./routes/admin')
+const loginRouter = require('./routes/login')
+const facultyRouter = require('./routes/faculty')
+
+
+
+app.use('/', indexRouter)
+app.use('/login', loginRouter)
+app.use('/student', isStudent, studentRouter)
+app.use('/admin', isAdmin, adminRouter)
+app.use('/faculty', isFaculty, facultyRouter)
+// app.post('/asd/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}),
+//   function(req, res) {
+//     console.log('asd')
+// })
+
+
+app.use(function(req, res){
+	res.send('error 404')
+})
+ 
+app.listen(app.get('port'),function(){
+	console.log('Server started at port ' + app.get('port'))
+});

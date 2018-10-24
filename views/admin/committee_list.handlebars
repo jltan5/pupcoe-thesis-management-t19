@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="row">
+        <div class="col-md-4 border border-danger rounded p-2">
+      <div class="panel">
+        {{#if error}}
+          <div class="alert alert-danger">
+            <p>{{error}}</p>
+          </div>
+        {{/if}}
+        {{#if success}}
+          <div class="alert alert-success">
+            <p>{{success}}</p>
+          </div>
+        {{/if}}
+        <div class="panel-body">
+          <form action="/admin/committee" method="POST">
+            <div class="form-group">
+              <select size="15" multiple style="width: 100%" class="form-control" name="facultyId">
+                {{#each committeeCandidates}}
+                  <option value="{{this.id}}"> {{this.first_name}} {{this.middle_name}}  {{this.last_name}}</option>
+                {{/each}}
+              </select>
+              <input type="submit" class="btn btn-danger form-control" id="add-commitee-member" name="addCommittee" value="Add">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8 border border-danger rounded p-4 ">
+      <div class="table-responsive">
+        <table class="table">
+          <thead align="center">
+            <tr>
+              <th width="90%">Faculty Name</th>
+              <th width="10%">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each committeeData}}
+              <tr>
+                <td>{{this.first_name}} {{this.middle_name}}  {{this.last_name}}</td>
+                <td>
+                  <form action="/admin/committee" method="POST">
+                    <input type="hidden" name="committeeId" value="{{this.id}}">
+                    <button class="btn btn-danger remove-committee" value="{{this.id}}" id="">Remove</button>
+                  </form>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+

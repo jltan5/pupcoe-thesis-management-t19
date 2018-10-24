@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-4" >
+      <h3>Group {{group.group_number}}</h3>
+      <hr>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <h4>Members</h4>
+      {{#each groupMembers}}
+        <p>{{this.last_name}}, {{this.first_name}} {{this.middle_name}} {{this.suffix}}</p>
+      {{/each}}
+    </div>
+  </div>
+</div>
