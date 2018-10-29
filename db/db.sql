@@ -14,9 +14,6 @@ CREATE TABLE users (
 	is_admin boolean DEFAULT false,
 	created_date DATE DEFAULT current_date);
 
-INSERT INTO users (username, email, password, first_name, last_name, phone_number, user_type, is_admin) VALUES ('Gtria', 'ginotria@gmail.com', '$2y$10$TolnpuSPmNr1qn/oJTzcf.XMyjvU7dZwuwWZE6kJnr2HN/nun7UfG', 'Gino', 'Tria', '09123456789', 'faculty', 'true');
-
-
 CREATE TABLE class (
 	id SERIAL PRIMARY KEY,
 	batch varchar(30),

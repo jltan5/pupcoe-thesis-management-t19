@@ -1,54 +1,81 @@
+
 <div class="container" >
-  <div class="border border-danger rounded p-5 mx-5">
-    <form action="/admin/student/create" method="post">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3><center>Add Student</center></h3>
+  <form action="/admin/student/create" method="post">
+  	<div class="panel panel-default">
+      <div class="panel-heading">
+        <h3>Add Student</h3>
+      </div>
+      <div class="panel-body">
+        {{#if error}}
+          <div class="alert alert-danger">
+            {{{error}}}
+          </div>
+        {{/if}}
+        {{#if success}}
+          <div class="alert alert-success">
+            {{{success}}}
+          </div>  
+        {{/if}}
+
+        <div>
+          <h4>Informations</h4>
         </div>
-        <div class="panel-body" >
-          {{#if success}}
-            <div class="alert alert-success">
-              {{{success}}}
-            </div>  
-          {{/if}}
-          {{#if error}}
-            <div class="alert alert-danger">
-              {{{error}}}
-            </div>  
-          {{/if}}
-          <br>
-          <table width="100%" class="mx-3">
-            <tr><td width="25%">First Name:</td>
-                <td width="65%">
-                  <input type="text" class="form-control" name="firstName" required="" value="{{firstName}}"></td></tr>
-            <tr><td width="15%">Middle Name:</td>
-                <td width="75%">
-                 <input type="text" placeholder="Optional" class="form-control faculty-create-information-name" name="middleName" value="{{middleName}}"></td></tr>
-            <tr><td width="15%">Last Name:</td>
-                <td width="75%">
-                   <input type="text" class="form-control" name="lastName" required="" value="{{lastName}}"></td></tr>
-            <tr><td width="15%">Email Address:</td>
-                <td width="75%">
-                  <input type="email" class="form-control" name="email" required="" value="{{email}}"></td></tr>
-            <tr><td width="15%">Phone Number:</td>
-                <td width="75%">
-                  <input type="text" class="form-control" name="phoneNumber" value="{{phoneNumber}}"></td></tr>
-            <tr><td width="15%">Student Number:</td>
-                <td width="75%">
-                  <input type="text" class="form-control" name="studentNumber" required="" value="{{studentNumber}}"></td></tr>
-            <tr><td width="15%">Password:</td>
-                <td width="75%">
-                 <input type="password" class="form-control" name="password1" required=""></td></tr>
-            <tr><td width="15%">Confirm Password:</td>
-                <td width="75%">
-                 <input type="password" class="form-control" name="password2" required=""></td></tr>
-            
-          </table><br>
-           <center> <input type="submit" class="btn btn-danger" name="Register"></center>
+        <div class="faculty-create-wrapper">
+
+          <div class="form-group" >
+            <div class="faculty-create-information faculty-create-information-name" >
+              <label>First Name</label>
+              <input type="text" class="form-control" name="firstName" required="" value="{{firstName}}">
+            </div>
+            <div class="faculty-create-information">
+              <label>Middle Name</label>
+              <input type="text" class="form-control faculty-create-information-name" name="middleName" value="{{middleName}}">
+            </div>
+            <div class="faculty-create-information faculty-create-information-name">
+              <label>Last Name</label>
+              <input type="text" class="form-control" name="lastName" required="" value="{{lastName}}">
+            </div>
+            <div class="faculty-create-information" id="suffix">
+              <label>Suffix</label>
+              <input type="text" class="form-control" name="suffix" value="{{suffix}}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="faculty-create-contact">
+              <label>Email</label>
+              <input type="email" class="form-control" name="email" required="" value="{{email}}">
+            </div>
+            <div class="faculty-create-contact">
+              <label>Phone number (optional)</label>
+              <input type="text" class="form-control" name="phoneNumber" value="{{phoneNumber}}">
+            </div>
+          </div>
+
+          <div class="form-group" id="student-create-student-number">
+            <label>Student Number</label>
+            <input type="text" class="form-control" name="studentNumber" required="" value="{{studentNumber}}">
           </div>
 
         </div>
       </div>
-    </form>
-  </div>
-</div> 
+
+      <div class="panel-body">
+        <div>
+          <h4>Credentials</h4>
+        </div>
+        <div class="faculty-create-wrapper">
+          <div class="form-group faculty-create-credentials">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password1" required="">
+            <label>Confirm password</label>
+            <input type="password" class="form-control" name="password2" required="">
+          </div>
+          <div class="form-group faculty-create-credentials">
+            <input type="submit" class="btn btn-success form-control" name="" value="Submit">
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

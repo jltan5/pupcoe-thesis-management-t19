@@ -1,7 +1,46 @@
 <div class="container">
   <div class="row">
-        <div class="col-md-4 border border-danger rounded p-2">
+    <div class="col-md-8 committee-left-panel">
+      <h3>Commitee Members</h3>
+      <hr  />
+      <div>
+        {{!-- <select class="dropdown">
+          <option>2018</option>
+          <option>2018</option>
+          <option>2018</option>
+        </select> --}}
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Faculty Name</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each committeeData}}
+              <tr>
+                <td>{{this.prefix}} {{this.last_name}}, {{this.first_name}} {{this.middle_name}}</td>
+                <td>
+                  <form action="/admin/committee" method="POST">
+                    <input type="hidden" name="committeeId" value="{{this.id}}">
+                    <input type="submit" class="hidden" id="btn{{this.id}}" name="removeCommittee" value="remove">
+                    <button class="btn btn-danger remove-committee" value="{{this.id}}" id="">Remove</button>
+                  </form>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4 committee-right-panel">
       <div class="panel">
+        <div class="panel-heading">
+          <h3>Add committee member</h3>
+        </div>
+        <hr />
         {{#if error}}
           <div class="alert alert-danger">
             <p>{{error}}</p>
@@ -14,48 +53,36 @@
         {{/if}}
         <div class="panel-body">
           <form action="/admin/committee" method="POST">
+            {{!-- <div class="form-inline">
+              <label>Batch: </label>
+              <select name="batch" class="form-control">
+                <option>1</option>
+              </select>
+            </div> --}}
             <div class="form-group">
               <select size="15" multiple style="width: 100%" class="form-control" name="facultyId">
                 {{#each committeeCandidates}}
-                  <option value="{{this.id}}"> {{this.first_name}} {{this.middle_name}}  {{this.last_name}}</option>
+                  <option value="{{this.id}}">{{this.prefix}} {{this.last_name}}, {{this.first_name}} {{this.middle_name}}</option>
                 {{/each}}
               </select>
-              <input type="submit" class="btn btn-danger form-control" id="add-commitee-member" name="addCommittee" value="Add">
+              <input type="submit" class="btn btn-success form-control" id="add-commitee-member" name="addCommittee" value="Add">
             </div>
           </form>
         </div>
       </div>
     </div>
-
-    <div class="col-md-8 border border-danger rounded p-4 ">
-      <div class="table-responsive">
-        <table class="table">
-          <thead align="center">
-            <tr>
-              <th width="90%">Faculty Name</th>
-              <th width="10%">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each committeeData}}
-              <tr>
-                <td>{{this.first_name}} {{this.middle_name}}  {{this.last_name}}</td>
-                <td>
-                  <form action="/admin/committee" method="POST">
-                    <input type="hidden" name="committeeId" value="{{this.id}}">
-                    <button class="btn btn-danger remove-committee" value="{{this.id}}" id="">Remove</button>
-                  </form>
-                </td>
-              </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-
   </div>
 </div>
 
 
+<script type="text/javascript">
+  $(document).ready(function(){
+    console.log('ready');
+    $(".remove-committee").click(function(){
+      if (window.confirm('Are you sure?')) {
+        console.log('deleting...');
+        $("#btn" + this.val()).click();
+      }
+    })
+  });
+</script>
