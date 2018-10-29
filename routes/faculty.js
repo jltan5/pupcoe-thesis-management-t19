@@ -101,6 +101,83 @@ router.get('/class/groups', function(req, res, next) {
   }
 })
 
+router.get('/proposals', function(req, res, next) {
+  faculty.checkIfCommittee(req.user.id, function(data) {
+    faculty.getThesisProposals('For Approval', function(forApprovalThesis) {
+      faculty.getThesisProposals('For Committee Approval', function(forCommitteeApprovalThesis) {
+        console.log(data)
+        res.render('./faculty/thesis_proposals', {
+          layout: 'faculty',
+          title: 'Thesis Proposals',
+          first_name: req.user.first_name,
+          middle_name: req.user.middle_name,
+          last_name: req.user.last_name,
+          suffix: req.user.suffix,
+          committee: data,
+          forApprovalThesis: forApprovalThesis,
+          forCommitteeApprovalThesis: forCommitteeApprovalThesis
+        })
+      })
+    })
+  })
+})
+
+
+
+router.post('/proposals', function(req, res, next) {
+  if (req.body.acceptThis) {
+    console.log('faculty')
+    faculty.updateThesisProposal('For Committee Approval', false, req.body.thesisId, function(data) {
+      res.redirect('/faculty/proposals')
+    })
+  } else if (req.body.rejectThis) {
+    console.log('faculty')
+    faculty.updateThesisProposal('Rejected By Adviser', false, req.body.thesisId, function(data) {
+      res.redirect('/faculty/proposals')
+    })
+  } else if (req.body.acceptThisCommittee) {
+    console.log('committee')
+    faculty.updateThesisProposal('Approved By Committee', true, req.body.thesisId, function(data) {
+      res.redirect('/faculty/proposals')
+    })
+  } else if (req.body.rejectThisCommittee) {
+    console.log('committee')
+    faculty.updateThesisProposal('Rejected By Committee', false, req.body.thesisId, function(data) {
+      res.redirect('/faculty/proposals')
+    })
+  }
+})
+
+router.get('/thesis', function(req, res, next) {
+  var limit = 4
+  faculty.getThesisList(req.session.titleQuery || "", undefined, undefined, undefined, limit, ((req.query.p - 1)*4 || 0), function(thesisList) {
+    res.render('./faculty/thesis_list', {
+      layout: 'faculty',
+      title: 'Thesis List',
+      first_name: req.user.first_name,
+      middle_name: req.user.middle_name,
+      last_name: req.user.last_name,
+      suffix: req.user.suffix,
+      thesisList: thesisList,
+      pagination: {
+        page: req.query.p || 1,
+        limit: 4,
+        n: req.query.p || 1
+      }
+    })
+  })
+})
+
+router.post('/thesis', function(req, res, next) {
+  var limit = 4
+  if (req.body.clearSearch) {
+    delete req.session.titleQuery
+    res.redirect('/faculty/thesis')
+  } else {
+    req.session.titleQuery = req.body.titleQuery
+    res.redirect('/faculty/thesis')
+  }
+})
 
 
 module.exports = router

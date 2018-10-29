@@ -9,11 +9,18 @@ const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
+
+const paginate = require('handlebars-paginate')
+const Handlebars = require('handlebars')
+var MomentHandler = require("handlebars.moment");
  
+
 const user = require('./models/users') 
 
 
 
+Handlebars.registerHelper('paginate', paginate);
+MomentHandler.registerHelpers(Handlebars);
 var app = express();
 app.engine('handlebars', exphbs({
 	defaultLayout: 'main',
@@ -59,6 +66,8 @@ function(username, password, done) {
       }
       console.log('logged in')
       return done(null, user)
+    }).catch(e => {
+      console.log(e)
     });
 
  });

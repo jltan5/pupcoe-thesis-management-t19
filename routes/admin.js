@@ -149,7 +149,7 @@ router.get('/class/create', function(req, res, next) {
   year.push(d.getFullYear() - 1)
   year.push(d.getFullYear() - 2)
   year.push(d.getFullYear() - 3)
-  var section = [1,2,3,4,5,6]
+  var section = [1,2,3,4,5]
 
   admin.listFaculty(function(facultyList) {
     res.render('./admin/class_create',{

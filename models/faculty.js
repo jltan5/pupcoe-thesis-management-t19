@@ -129,6 +129,66 @@ var actions = {
       console.log(e)
       return callback(e)
     })
+  },
+  checkIfCommittee: (facultyId, callback) => { 
+    const query = {
+      text: `SELECT EXISTS (SELECT id FROM committee WHERE faculty_id = $1)`,
+      values: [facultyId]
+    }
+    db.query(query).then(data => {
+      return callback(data.rows[0].exists)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+
+  },
+
+  getThesisProposals: (filter, callback) => {
+    const query = {
+      text: `SELECT thesis.id as thesis_id, thesis.group_id, title, abstract, status, date_created, groups.group_number 
+        FROM thesis
+        INNER JOIN groups ON groups.id = thesis.group_id
+        WHERE status = $1
+        ORDER BY date_created ASC, status ASC`,
+      values: [filter]
+    }
+
+    db.query(query).then(data => {
+      return callback(data.rows)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+  },
+
+  updateThesisProposal: (status, approved, thesisId, callback) => {
+    const query = {
+      text: `UPDATE thesis SET status = $1, date_updated = current_date, is_approved = $2 WHERE id = $3`,
+      values: [status, approved, thesisId]
+    }
+    db.query(query).then(data => {
+      return callback(data)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+  },
+
+  getThesisList: (title,category,year,adviser, limit, offset, callback) => {
+    const query = {
+      text: `SELECT * FROM thesis WHERE title ILIKE '%${title}%'
+        LIMIT ${limit} OFFSET ${offset}`,
+      values: []
+    }
+    db.query(query).then(data => {
+      console.log(query)
+      console.log(data.rows)
+      return callback(data.rows)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
   }
 
 }

@@ -39,7 +39,8 @@ var actions = {
     const query = {
       text: `SELECT first_name, middle_name, last_name, suffix FROM group_cluster 
         INNER JOIN users ON users.id = group_cluster.member_id
-        WHERE group_id = ${groupId}`
+        WHERE group_id = ${groupId}
+        ORDER BY last_name ASC, first_name ASC`
     }
     db.query(query).then(data => {
       return callback(data.rows)
@@ -47,7 +48,89 @@ var actions = {
       console.log(e)
       return callback(e)
     })
+  },
+
+  getThesisProposals: (groupId, callback) => {
+    const query = {
+      text: `SELECT * FROM thesis WHERE group_id = ${groupId} ORDER BY date_created ASC, date_updated ASC`
+    }
+
+    db.query(query).then(data => {
+      return callback(data.rows)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+
+  },
+
+  submitThesisProposal: (data, callback) => {
+    const query = {
+      text: `INSERT INTO thesis (group_id, title, abstract, status) VALUES ($1, $2, $3, 'For Approval')`,
+      values: [data.groupId, data.thesisTitle, data.thesisAbstract]
+    }
+
+    db.query(query).then(data => {
+      return callback(data)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+  }, 
+
+  makeMainThesis: (thesisId, callback) => {
+    const query = {
+      text: `UPDATE thesis SET is_main = true WHERE id = $1`, 
+      values: [thesisId]
+    }
+    db.query(query).then(data => {
+      return callback(data)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+  },
+
+  getApprovedThesis: (groupId, callback) => {
+    const query = {
+      text: `SELECT * FROM thesis WHERE group_id = $1 and is_approved = true`, 
+      values: [groupId]
+    }
+    db.query(query).then(data => {
+      return callback(data.rows)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+  },
+
+  checkIfNoMainTopic: (groupId, callback) => {
+    const query = {
+      text: `SELECT EXISTS (SELECT id FROM thesis WHERE group_id = $1 AND is_main = true)`,
+      values: [groupId]
+    }
+    db.query(query).then(data => {
+      console.log(data.rows[0].exists)
+      return callback(data.rows[0].exists)
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
+  }, 
+
+  getMainThesis: (groupId, callback) => {
+    const query = {
+      text: `SELECT * FROM thesis WHERE group_id = $1 AND is_main = true`,
+      values: [groupId]
+    }
+    db.query(query).then(data => {
+      return callback(data.rows[0])
+    }).catch(e => {
+      console.log(e)
+      return callback(e)
+    })
   }
+
 
 }
 

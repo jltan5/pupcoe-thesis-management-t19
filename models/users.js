@@ -23,7 +23,10 @@ var actions = {
           callback(data2.rows[0])
         }).catch(e => callback(e))
       }
-    }).catch(e => callback(e))
+    }).catch(e => {
+      console.log(e)
+      callback(e)
+    })
   },
   getByEmail: (email, callback) => {
     const query = {
