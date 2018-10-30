@@ -1,29 +1,27 @@
 <div class="container">
-	<div class="panel panel-default">
-    <a href="/admin/student/create" class="btn">Add Student</a>
-    <div class="panel-heading">
+  <div class="border border-danger rounded p-5 mx-5">
+    <a href="/admin/student/create" class="btn btn-light" style="float: right; margin-bottom: -25px;">Add Student</a>
+    <div>
       <h3>Students</h3>
     </div>
 
-    <div class="panel-body">
-      <table class="table">
+    <div class="mt-5">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>Student Number</th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone Number</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {{#each studentList}}
             <tr>
               <td>{{this.student_id}}</td>
-              <td>{{this.prefix}} {{this.first_name}} {{this.middle_name}} {{this.last_name}} {{this.suffix}}</td>
+              <td>{{this.first_name}} {{this.middle_name}} {{this.last_name}}</td>
               <td>{{this.email}}</td>
               <td>{{this.phone_number}}</td>
-              <td><a href="#">view</a></td>
             </tr>
           {{/each}}
         </tbody>

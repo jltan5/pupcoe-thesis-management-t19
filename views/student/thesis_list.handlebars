@@ -1,59 +1,56 @@
 <div class="container">
-  <div class="rows">
-    <div class="col-md-5">
+
       <form action="/student/thesis/all" method="POST">
-        <div class="form-inline">
-          <label>Search by Title: </label>
-          <input type="text" name="titleQuery">
-          <button type="submit" name="search"><span class=" glyphicon glyphicon-search" style=""></span></button>
-          <input type="submit" name="clearSearch" value="Clear Search">
+         
+        <div class="form-group row w-100">
+          <div class="col-2">
+          <label>Search by Title:</label></div>
+          <div class="col-8">
+          <input class="form-control" type="text" name="titleQuery"></div>
+          <div class="col-1">
+          <button class="btn-sm m-1 " type="submit" name="search">Search</button></div>
+          <div class="col-1">
+          <input class="btn-sm m-1 " type="submit" name="clearSearch" value="Reset"> </div>
         </div>
       </form>
-    </div>
-  </div>
+    
   <div class="rows">
     <div class="col-md-12">
-      <div>
-        <div class="pagination" style="font-size: 1.3em;">
+   
+        
+  
+      <table class="table">
+        <thead>
+          <tr align="center">
+            <th width="45%">Title</th>
+            <th width="45%">Abstract</th>
+            <th width="10%">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each thesisList}}
+            <tr>
+              <td><center>{{this.title}}</center></td>
+              <td>{{this.abstract}}</td>
+              <td>{{this.status}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+<div class="pagination" style="font-size: 1.3em;">
           
           {{#paginate pagination type="previous"}}
             <input type="hidden" value="&p={{n}}" id="previousN" name="">
-            <a {{#if disabled}}class="disabled"{{/if}} id="previous" href="?p={{n}}">❮</a>
+            <a {{#if disabled}}class="disabled"{{/if}} id="previous" href="?p={{n}}">Previous</a>
           {{/paginate}}
-         
+         &nbsp; | &nbsp;
           {{#paginate pagination type="next"}}
             <input type="hidden" value="&p={{n}}" id="nextN" name="">
             <a {{#if disabled}}class="disabled"{{/if}} id="next" href="?p={{n}}">❯</a>
           {{/paginate}}
          
         </div>
-      </div>
-
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Abstract</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each thesisList}}
-            <tr>
-              <td>{{this.title}}</td>
-              <td>{{this.abstract}}</td>
-              <td>{{this.status}}</td>
-              <td>
-                <form>
-                  <input type="submit" name="details" class="btn btn-info" value="Details">
-                </form>
-              </td>
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
-
 
     </div>
   </div>

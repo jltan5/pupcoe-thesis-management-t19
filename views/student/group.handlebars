@@ -1,4 +1,4 @@
-<div class="container-fluid" style="margin: 0 5em">
+<div class="container-fluid m-2">
   <div class="row">
 
     <div class="col-md-4" >
@@ -10,7 +10,7 @@
       {{/if}}
       <h4>Members</h4>
       {{#each groupMembers}}
-        <p style="margin: 0 0">{{this.last_name}}, {{this.first_name}} {{this.middle_name}} {{this.suffix}}</p>
+        <p style="margin: 0 0">{{this.last_name}}, {{this.first_name}} {{this.middle_name}}</p>
       {{/each}}
       <hr>
       <form action="/student/group" method="post">
@@ -22,7 +22,7 @@
             <input type="text" class="form-control" name="thesisTitle">
             <label>Abstract</label>
             <textarea class="form-control" name="thesisAbstract" rows="6" style="resize: none"></textarea>
-            <input type="submit" class="btn btn-success" name="thesisProposalSubmit" value="Submit" style="margin: 15px 0" {{#if noMainTopic}}disabled{{/if}}>
+            <center><input type="submit" class="btn btn-info" name="thesisProposalSubmit" value="Submit" style="margin: 15px 0" {{#if noMainTopic}}disabled{{/if}}></center>
           </div>
         </div>
       </form>
@@ -31,16 +31,16 @@
     <div class="col-md-8">
       <div class="rows">
         <div class="col-md-12">
-          <h3>List of Approved Thesis</h3>
+          <h4><center>List of Approved Thesis</center></h4>
           <hr>
 
           <div style="height: 25vh; overflow: auto" data-spy="scroll">
-            <table class="table">
-              <thead>
+            <table class="table table-hover">
+              <thead class="thead thead-dark">
                 <tr>
-                  <th>Title</th>
-                  <th>Status</th>
-                  <th></th>
+                  <th width="40%">Title</th>
+                  <th width="40%">Status</th>
+                  <th width="20%"></th>
                 </tr>
               </thead>
               <tbody>
@@ -67,24 +67,24 @@
       </div>
       <div class="rows">
         <div class="col-md-12">
-          <h3>List of Thesis Proposal</h3>
+          <h4><center>List of Thesis Proposal</center></h4>
           <hr>
           <div style="height: 32vh; overflow: auto" data-spy="scroll">
-            <table class="table">
-              <thead>
+            <table class="table table-hover w-100">
+              <thead class="thead thead-dark">
                 <tr>
-                  <th>Title</th>
-                  <th>Abstract</th>
-                  <th>Status</th>
-                  <th></th>
+                  <th width="40%">Title</th>
+                  <th width="40%">Abstract</th>
+                  <th width="20%">Status</th>
+                
                 </tr>
               </thead>
               <tbody>
                 {{#each thesisProposals}}
                   <tr>
-                    <td class="col-md-1">{{this.title}}</td>
-                    <td class="col-md-8"><textarea readonly="true" rows="4" style="resize: none; border: 0px; width: 100%">{{this.abstract}}</textarea></td>
-                    <td class="col-md-3">{{this.status}}</td>
+                    <td width="40%">{{this.title}}</td>
+                    <td width="40%">{{this.abstract}}</td>
+                    <td width="20%">{{this.status}}</td>
                   </tr>
                 {{/each}}
               </tbody>

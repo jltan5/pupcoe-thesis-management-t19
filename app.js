@@ -141,10 +141,7 @@ app.use('/login', loginRouter)
 app.use('/student', isStudent, studentRouter)
 app.use('/admin', isAdmin, adminRouter)
 app.use('/faculty', isFaculty, facultyRouter)
-// app.post('/asd/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}),
-//   function(req, res) {
-//     console.log('asd')
-// })
+
 
 
 app.use(function(req, res){

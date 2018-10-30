@@ -1,21 +1,21 @@
 <div class="container">
-	<div class="panel panel-default">
-    <a href="/admin/class/create" class="btn">Add Class</a>
-    <div class="panel-heading">
-      <h3>Class</h3>
+  <div class="border border-danger rounded p-5 mx-5">
+    <a href="/admin/class/create" class="btn btn-light" style="float: right; margin-bottom: -25px;">Add Class</a>
+    <div >
+      <h3>CLASS</h3>
     </div>
-
-    <div class="panel-body">
-      <table class="table">
-        <thead>
+ 
+    <div class=" mt-5">
+      <table class="table table-hover">
+        <thead align="center">
           <tr>
-            <th>Batch</th>
-            <th>Section</th>
-            <th>Adviser</th>
-            <th></th>
+            <th>BATCH</th>
+            <th>SECTION</th>
+            <th>ADVISER</th>
+            <th>ACTION</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody align="center">
           {{#each classList}}
             <tr>
               <td>{{this.batch}}</td>
@@ -25,9 +25,9 @@
                 <form action="/admin/class/list" method="post">
                   <input type="hidden" value="{{this.id}}" name="classId">
                   <input type="hidden" value="{{this.advisor_id}}" name="advisorId">
-                  <input type="submit" class="btn" value="view" name="view">
-                  <input type="submit" class="hidden" value="delete" name="delete" id="btn{{this.id}}">
-                  <button class="deleteButton btn" value="{{this.id}}">delete</button>
+                  <input type="submit" class="btn" value="View" name="view">
+                 
+                  <button class="deleteButton btn" value="{{this.id}}">Delete</button>
                 </form></td>
             </tr>
           {{/each}}
@@ -38,22 +38,3 @@
   </div>
 </div>
 
-
-    
-
-
-<script type="text/javascript">
-$(document).ready(function(){
-
-
-  $(".deleteButton").click(function(){
-    if (window.confirm("Are you sure?")){
-      $("#btn"+$(this).val()).trigger("click")
-    }
-  })
-
-
-
-   
-});
-</script>
